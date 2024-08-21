@@ -15,12 +15,13 @@ class Transformer:
         """
         if spec_file:
             with open(spec_file, 'r') as file:
-                transformation_spec = json.load(file)
+                transformation_spec = json.dumps(json.load(file))
+                
         elif transformation_spec is None:
             raise ValueError("Either transformation_spec or spec_file must be provided")
         
         #transformation_spec_str = json.dumps(transformation_spec)
-        print(f"Transformation spec transformation_spec {transformation_spec}")
+        logger.debug(f"Transformation spec transformation_spec {transformation_spec}")
         
         self.expression = Jsonata(transformation_spec)
 
@@ -33,7 +34,7 @@ class Transformer:
         """
         logger.debug(f"tranforming given payload {input_payload}")
         response = self.expression.evaluate(input_payload)
-        print(f"Transformation response {response}")
+        #print(f"Transformation response {response}")
         logger.debug(f"Transormed response  {response}")
         return response
 
