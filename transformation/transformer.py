@@ -1,7 +1,11 @@
 import json
 import jsonata
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Transformer:
+    
     def __init__(self, transformation_spec=None, spec_file=None):
         """
         Initializes the Transformer with the given transformation specification or a file containing the specification.
@@ -24,7 +28,10 @@ class Transformer:
         :param input_payload: A dictionary representing the input JSON payload.
         :return: A dictionary representing the transformed JSON payload.
         """
-        return self.expression.evaluate(input_payload)
+        logger.debug(f"tranforming given payload {input_payload}")
+        response = self.expression.evaluate(input_payload)
+        logger.debug(f"Transormed response  {response}")
+        return response
 
 # Example usage
 if __name__ == "__main__":
