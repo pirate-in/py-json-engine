@@ -9,7 +9,7 @@ class Transformer:
     def __init__(self, transformation_spec=None, spec_file=None):
         """
         Initializes the Transformer with the given transformation specification or a file containing the specification.
-
+        Use https://pypi.org/project/jsonata-python/
         :param transformation_spec: A dictionary representing the JSON transformation specification.
         :param spec_file: A file path to a JSON file containing the transformation specification.
         """
