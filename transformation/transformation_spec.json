@@ -1,21 +1,16 @@
 {
-    "name": "user.name",
-    "ageInYears": "user.age",
-    "emailAddress": "user.email",
+    "name": user.name,
+    "ageInYears": user.age,
+    "emailAddress": user.email,
     "location": {
-      "city": "user.address.city",
-      "postalCode": "user.address.zipcode"
+        "city": user.address.city,
+        "postalCode": user.address.zipcode
     },
-    "orderSummaries": {
-      "orders": [
-        {
-          "orderId": "orders.id",
-          "totalAmount": "orders.total",
-          "itemNames": "orders.items.name"
-        }
-      ]
+    "orderSummaries": orders.{
+        "orderId": id,
+        "totalAmount": total,
+        "itemNames": items.name
     },
-    "isAdult": "$boolean(user.age >= 18)",
+    "isAdult": user.age >= 18,
     "staticValue": "This is a static value"
-  }
-  
+}

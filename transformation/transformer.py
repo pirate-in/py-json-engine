@@ -1,12 +1,12 @@
 import json
-import jsonata
+from jsonata import Jsonata
 import logging
 
 logger = logging.getLogger(__name__)
 
 class Transformer:
     
-    def __init__(self, transformation_spec=None, spec_file=None):
+    def __init__(self, transformation_spec: str = None, spec_file=None):
         """
         Initializes the Transformer with the given transformation specification or a file containing the specification.
         Use https://pypi.org/project/jsonata-python/
@@ -18,8 +18,11 @@ class Transformer:
                 transformation_spec = json.load(file)
         elif transformation_spec is None:
             raise ValueError("Either transformation_spec or spec_file must be provided")
-
-        self.expression = jsonata.jsonata(transformation_spec)
+        
+        #transformation_spec_str = json.dumps(transformation_spec)
+        print(f"Transformation spec transformation_spec {transformation_spec}")
+        
+        self.expression = Jsonata(transformation_spec)
 
     def transform(self, input_payload):
         """
@@ -30,6 +33,7 @@ class Transformer:
         """
         logger.debug(f"tranforming given payload {input_payload}")
         response = self.expression.evaluate(input_payload)
+        print(f"Transformation response {response}")
         logger.debug(f"Transormed response  {response}")
         return response
 
@@ -66,38 +70,37 @@ if __name__ == "__main__":
     }
 
     # Option 1: Use a transformation specification directly
-    transformation_spec = {
-        "name": "user.name",
-        "ageInYears": "user.age",
-        "emailAddress": "user.email",
+    transformation_spec = '''
+    {
+        "name": user.name,
+        "ageInYears": user.age,
+        "emailAddress": user.email,
         "location": {
-            "city": "user.address.city",
-            "postalCode": "user.address.zipcode"
+            "city": user.address.city,
+            "postalCode": user.address.zipcode
         },
-        "orderSummaries": {
-            "orders": [
-                {
-                    "orderId": "orders.id",
-                    "totalAmount": "orders.total",
-                    "itemNames": "orders.items.name"
-                }
-            ]
+        "orderSummaries": orders.{
+            "orderId": id,
+            "totalAmount": total,
+            "itemNames": items.name
         },
-        "isAdult": "$boolean(user.age >= 18)",
+        "isAdult": user.age >= 18,
         "staticValue": "This is a static value"
     }
+    '''
 
     # Initialize Transformer with transformation specification
     transformer = Transformer(transformation_spec=transformation_spec)
-
+    transformed_payload = transformer.transform(input_payload)
+    
     # OR
 
     # Option 2: Use a transformation specification from a file
-    spec_file = 'transformation_spec.json'
-    transformer = Transformer(spec_file=spec_file)
+    #spec_file = 'transformation_spec.json'
+    #transformer = Transformer(spec_file=spec_file)
 
     # Perform the transformation
-    transformed_payload = transformer.transform(input_payload)
+    #transformed_payload = transformer.transform(input_payload)
 
     # Print the transformed output
-    print(json.dumps(transformed_payload, indent=2))
+    #print(json.dumps(transformed_payload, indent=2))
