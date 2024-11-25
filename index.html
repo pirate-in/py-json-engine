@@ -1,55 +1,88 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastAPI Async Execution</title>
+    <title>Chatbot</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        .container {
+        .chat-container {
             max-width: 600px;
             margin: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
         }
-        .input-field, .output-field {
-            margin-top: 20px;
+        .chat {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .chat li {
+            margin-bottom: 10px;
+        }
+        .chat .question {
+            font-weight: bold;
+        }
+        .chat .response {
+            margin-left: 20px;
+            color: gray;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>FastAPI Async Execution</h1>
-        <form id="input-form">
-            <label for="input">Enter Input:</label><br>
-            <input type="text" id="input" name="input" class="input-field" required>
-            <button type="submit">Submit</button>
+    <div class="chat-container">
+        <h1>Chatbot</h1>
+        <ul id="chat" class="chat"></ul>
+        <form id="chat-form">
+            <input type="text" id="question" name="question" placeholder="Type your question..." required>
+            <button type="submit">Send</button>
         </form>
-        <div class="output-field">
-            <h3>Result:</h3>
-            <pre id="result"></pre>
-        </div>
     </div>
 
     <script>
-        const form = document.getElementById('input-form');
-        const resultContainer = document.getElementById('result');
+        const chatForm = document.getElementById('chat-form');
+        const chatList = document.getElementById('chat');
 
-        form.addEventListener('submit', async (event) => {
+        chatForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            const formData = new FormData(form);
+            const questionInput = document.getElementById('question');
+            const question = questionInput.value;
+
+            // Append the question to the chat
+            const questionItem = document.createElement('li');
+            questionItem.classList.add('question');
+            questionItem.textContent = `You: ${question}`;
+            chatList.appendChild(questionItem);
+
+            // Clear the input field
+            questionInput.value = '';
 
             try {
-                const response = await fetch('/execute', {
+                // Send the question to the server
+                const response = await fetch('/ask', {
                     method: 'POST',
-                    body: formData,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ question }),
                 });
-                const result = await response.json();
-                resultContainer.textContent = JSON.stringify(result, null, 2);
+
+                const data = await response.json();
+
+                // Append the response to the chat
+                const responseItem = document.createElement('li');
+                responseItem.classList.add('response');
+                responseItem.textContent = `Bot: ${data.response}`;
+                chatList.appendChild(responseItem);
+
+                // Scroll to the latest message
+                chatList.scrollTop = chatList.scrollHeight;
             } catch (error) {
-                resultContainer.textContent = `Error: ${error}`;
+                console.error('Error:', error);
             }
         });
     </script>
