@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Async Execution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .input-field, .output-field {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FastAPI Async Execution</h1>
+        <form id="input-form">
+            <label for="input">Enter Input:</label><br>
+            <input type="text" id="input" name="input" class="input-field" required>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="output-field">
+            <h3>Result:</h3>
+            <pre id="result"></pre>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('input-form');
+        const resultContainer = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/execute', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await response.json();
+                resultContainer.textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                resultContainer.textContent = `Error: ${error}`;
+            }
+        });
+    </script>
+</body>
+</html>
+
