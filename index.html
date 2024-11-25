@@ -7,40 +7,84 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
+
         .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             max-width: 600px;
             margin: auto;
             border: 1px solid #ccc;
-            padding: 10px;
             border-radius: 5px;
+            overflow: hidden;
         }
+
         .chat {
+            flex: 1;
             list-style: none;
-            padding: 0;
-            max-height: 300px;
+            padding: 10px;
+            margin: 0;
             overflow-y: auto;
-            margin-bottom: 10px;
+            background-color: #f9f9f9;
         }
+
         .chat li {
             margin-bottom: 10px;
         }
+
         .chat .question {
             font-weight: bold;
         }
+
         .chat .response {
             margin-left: 20px;
             color: gray;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+        }
+
+        textarea {
+            flex: 1;
+            resize: none;
+            height: 50px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <h1>Chatbot</h1>
         <ul id="chat" class="chat"></ul>
-        <form id="chat-form">
-            <input type="text" id="question" name="question" placeholder="Type your question..." required>
+        <form id="chat-form" class="input-container">
+            <textarea id="question" name="question" placeholder="Type your question..." required></textarea>
             <button type="submit">Send</button>
         </form>
     </div>
@@ -52,7 +96,9 @@
         chatForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const questionInput = document.getElementById('question');
-            const question = questionInput.value;
+            const question = questionInput.value.trim();
+
+            if (!question) return;
 
             // Append the question to the chat
             const questionItem = document.createElement('li');
@@ -60,7 +106,7 @@
             questionItem.textContent = `You: ${question}`;
             chatList.appendChild(questionItem);
 
-            // Clear the input field
+            // Clear the textarea
             questionInput.value = '';
 
             try {
